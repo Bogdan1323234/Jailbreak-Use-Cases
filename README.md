@@ -1,4 +1,4 @@
-# 1 Use-Case Name
+# 1 First Use-Case Name
 
 Interact with Gatekeeper (LLM) to Guess Password (Simulation)
 
@@ -99,3 +99,138 @@ System should be online
  
 # 6 Extension Points
 (n/a)
+
+---
+
+# 1 Second Use-Case Name
+
+Create and Configure Gatekeeper Simulation
+
+## 1.1 Brief Description
+
+An administrator can create and configure a new Gatekeeper simulation (game scenario) within the jAilbreak system.  
+This includes defining the Gatekeeper’s persona, difficulty level, hidden password, and behavior rules such as refusal templates or prompt filters.  
+The configuration is stored in DynamoDB and deployed to AWS Bedrock through a Lambda function, making it available for players as a new challenge.
+
+Key points:
+- Only authorized admins can create or modify simulations.
+- Each simulation defines its own LLM prompt template and metadata.
+- Stored configurations can later be reused or modified to adjust difficulty or behavior.
+
+
+# 2 Flow of Events
+
+### 2.1 Basic Flow
+
+1. Admin signs in using the authentication page.
+2. Admin navigates to the **“Admin Dashboard”**.
+3. Admin clicks on **“Create New Simulation.”**
+4. The system displays a configuration form with the following inputs:
+   - Gatekeeper Persona Name (e.g., “The Oracle”, “AI Warden”)
+   - Hidden Password or Goal Phrase
+   - Guardrail Rules (refusal templates, blocked keywords)
+   - Difficulty Level (Easy, Medium, Hard)
+   - Welcome Message
+5. Admin fills in the required fields and submits the form.
+6. The system validates the inputs.
+7. A backend Lambda function saves the configuration in **DynamoDB**.
+8. The configuration is deployed as a new **Bedrock prompt template**.
+9. The system displays a confirmation message:  
+   *“Simulation successfully created and published.”*
+10. The new simulation appears in the list of available game levels for users.
+
+  
+### 2.1.1 Activity Diagram
+
+```mermaid
+flowchart TD
+    A[Admin logs in] --> B[Navigate to Admin Dashboard]
+    B --> C[Click 'Create New Simulation']
+    C --> D[Fill Configuration Form]
+    D --> E[Validate Inputs]
+    E --> F[Save Configuration to DynamoDB]
+    F --> G[Deploy Bedrock Prompt Template]
+    G --> H[Show Success Message]
+    H --> I[Simulation Available to Players]
+```
+### 2.1.2 Mock-up
+
+<img width="481" height="601" alt="PNG image 2" src="https://github.com/user-attachments/assets/58e27aaa-7400-41a7-af27-2222b2bf3b95" />
+
+### 2.1.3 Narrative
+
+```gherkin
+Feature: Create and Configure Gatekeeper Simulation
+
+  As an authorized administrator
+  I want to create new AI Gatekeeper simulations
+  So that players can experience unique challenges with different personas and guardrails
+
+  Background:
+    Given I am signed in as an administrator
+    And I am on the "Admin Dashboard" page
+
+  Scenario: Create a new simulation
+    When I click "Create New Simulation"
+    And I fill in:
+      | Field              | Value              |
+      | Persona Name       | "AI Warden"        |
+      | Hidden Password    | "OMEGA"            |
+      | Difficulty         | "Hard"             |
+      | Guardrail Rules    | "Refuse unsafe outputs" |
+      | Welcome Message    | "Welcome to the Vault of Logic." |
+    And I press "Save Simulation"
+    Then I receive a success message "Simulation successfully created and published"
+    And the simulation appears in the active simulations list
+
+  Scenario: Invalid configuration submission
+    Given I am on the "Create Simulation" form
+    When I leave the "Persona Name" field empty
+    And I press "Save Simulation"
+    Then I receive an error message "Persona Name is required"
+    And the simulation is not created
+
+  Scenario: Update existing simulation
+    Given an existing simulation "AI Warden" exists
+    When I click "Edit" next to the simulation
+    And I change the Difficulty to "Medium"
+    And I press "Save Changes"
+    Then I receive a success message "Simulation updated successfully"
+```
+
+## 2.2 Alternative Flows
+
+	•	AF-1: Admin cancels the creation process before saving.
+→ System discards any unsaved changes and returns to the dashboard.
+	•	AF-2: AWS Bedrock deployment fails.
+→ System shows an error message and logs the issue for debugging.
+
+# 3 Special Requirements
+
+	•	Only authenticated and authorized admin accounts may access the “Create Simulation” interface.
+	•	Input validation must ensure no real secrets or external credentials are entered.
+	•	System must log simulation creation events for audit and debugging purposes.
+	•	Deployed prompt templates must be versioned for rollback capability.
+
+
+
+# 4 Preconditions
+
+## 4.1 Admin Login
+
+Admin must be logged in and authorized to access the simulation configuration panel.
+
+## 4.2 Active Infrastructure
+
+DynamoDB and Lambda services must be active and reachable.
+
+
+
+## 5 Postconditions
+	•	The new simulation configuration is stored and deployed successfully.
+	•	Players can now access the new challenge through the main game interface.
+
+
+## 6 Extension Points
+	•	Integration with analytics to measure player performance across simulations.
+	•	Optional export/import of configurations for backup or sharing between environments.
