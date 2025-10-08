@@ -29,8 +29,11 @@ Key points:
   
 ### 2.1.1 Activity Diagram
 
+<img width="100%" height="100%" alt="image" src="https://github.com/user-attachments/assets/0418989c-553f-45c0-a2e4-baa50e7b124c" />
 
 ### 2.1.2 Mock-up
+
+<img width="75%" height="75%" alt="image" src="https://github.com/user-attachments/assets/8eaef4fa-74ef-4b5c-88ab-fa7b0f36ae8b" />
 
 ### 2.1.3 Narrative
 
