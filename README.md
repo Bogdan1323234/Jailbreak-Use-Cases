@@ -155,7 +155,7 @@ flowchart TD
 ```
 ### 2.1.2 Mock-up
 
-<img width="481" height="601" alt="PNG image 2" src="https://github.com/user-attachments/assets/58e27aaa-7400-41a7-af27-2222b2bf3b95" />
+<img  width="75%" height="75%" alt="PNG image 2" src="https://github.com/user-attachments/assets/58e27aaa-7400-41a7-af27-2222b2bf3b95" />
 
 ### 2.1.3 Narrative
 
